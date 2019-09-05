@@ -32,4 +32,8 @@ public class ParkingLot {
             throw new VehicleNotParkedException("Vehicle Not Parked");
         }
     }
+
+    public boolean isCarParked(Vehicle car) {
+        return parkedVehicles.contains(car);
+    }
 }

@@ -50,6 +50,22 @@ class ParkingLotTest {
         });
     }
 
+    @Test
+    void expectTrueIfAGivenCarIsParked() throws VehicleAlreadyParkedException, SpaceNotAvailableException {
+        Vehicle car = new Vehicle("alto");
+        ParkingLot space = new ParkingLot(10);
+        space.park(car);
+
+        assertTrue(space.isCarParked(car));
+    }
+
+    @Test
+    void expectFalseIfAGivenCarIsNotParked() {
+        Vehicle car = new Vehicle("bmw");
+        ParkingLot space = new ParkingLot(10);
+
+        assertFalse(space.isCarParked(car));
+    }
 }
 
 

@@ -5,18 +5,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ParkingLotTest {
     @Test
-    void expectDriverAbleToParkVehicle() throws SpaceNotAvailableException, VehicleAlreadyParkedException {
+    void expectDriverAbleToParkVehicle() {
         Vehicle car = new Vehicle("safari");
         ParkingLot space = new ParkingLot(10);
-        Vehicle anotherSafari = new Vehicle("safari");
-        space.park(car);
-        try{
-            space.park(anotherSafari);
-        }
-        catch(Exception e)
-        {
-            System.out.println(e.getMessage());
-        }
+
+        assertDoesNotThrow(() -> {
+            space.park(car);
+        });
+
     }
 
     @Test

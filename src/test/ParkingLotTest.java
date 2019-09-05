@@ -1,23 +1,26 @@
-import com.tw.vapasi.ParkingLot;
-import com.tw.vapasi.SpaceNotAvailableException;
-import com.tw.vapasi.Vehicle;
+import com.tw.vapasi.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ParkingLotTest {
     @Test
-    void expectDriverAbleToParkVehicle() {
+    void expectDriverAbleToParkVehicle() throws SpaceNotAvailableException, VehicleAlreadyParkedException {
         Vehicle car = new Vehicle("safari");
         ParkingLot space = new ParkingLot(10);
-
-        assertDoesNotThrow(() -> {
-            space.park(car);
-        });
+        Vehicle anotherSafari = new Vehicle("safari");
+        space.park(car);
+        try{
+            space.park(anotherSafari);
+        }
+        catch(Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Test
-    void expectDriverNotAbleParkWhenParkingLotFull() throws SpaceNotAvailableException {
+    void expectDriverNotAbleParkWhenParkingLotFull() throws SpaceNotAvailableException, VehicleAlreadyParkedException {
         Vehicle car = new Vehicle("safari");
         Vehicle anotherCar = new Vehicle("i10");
         ParkingLot space = new ParkingLot(1);
@@ -31,7 +34,7 @@ class ParkingLotTest {
     }
 
     @Test
-    void expectDriverAbleRemoveVehicle() throws SpaceNotAvailableException {
+    void expectDriverAbleRemoveVehicle() throws SpaceNotAvailableException, VehicleAlreadyParkedException {
         Vehicle car = new Vehicle("safari");
         ParkingLot space = new ParkingLot(10);
         space.park(car);
@@ -46,7 +49,7 @@ class ParkingLotTest {
         Vehicle car = new Vehicle("safari");
         ParkingLot space = new ParkingLot(10);
 
-        assertDoesNotThrow(() -> {
+        assertThrows(VehicleNotParkedException.class, () -> {
             space.unPark(car);
         });
     }

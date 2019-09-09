@@ -3,27 +3,27 @@ package com.tw.vapasi;
 import java.util.HashSet;
 
 // Understands space available to station a parkable automobile
-public class ParkingLot {
-    private final long availableSpace;
+class ParkingLot {
+    private final long capacity;
     private HashSet<Parkable> parkedVehicles;
     private ParkingLotOwner owner;
 
-    public ParkingLot(long maxSpace) {
-        this.availableSpace = maxSpace;
+    ParkingLot(long maxSpace) {
+        this.capacity = maxSpace;
         this.parkedVehicles = new HashSet<>();
     }
 
-    public ParkingLot(long maxSpace, ParkingLotOwner owner) {
-        this.availableSpace = maxSpace;
+    ParkingLot(long maxSpace, ParkingLotOwner owner) {
+        this.capacity = maxSpace;
         this.parkedVehicles = new HashSet<>();
         this.owner = owner;
     }
 
     private boolean isParkingFull() {
-        return parkedVehicles.size() >= availableSpace;
+        return capacity == parkedVehicles.size();
     }
 
-    public void park(Parkable vehicle) throws SpaceNotAvailableException, VehicleAlreadyParkedException {
+    void park(Parkable vehicle) throws SpaceNotAvailableException, VehicleAlreadyParkedException {
         if (isParkingFull()) {
             throw new SpaceNotAvailableException("Parking full");
         }
@@ -36,21 +36,23 @@ public class ParkingLot {
         }
     }
 
-    public void unPark(Parkable vehicle) throws VehicleNotParkedException {
-        boolean isParkingFull = isParkingFull();
-
+    void unPark(Parkable vehicle) throws VehicleNotParkedException {
         boolean isUnParked = parkedVehicles.remove(vehicle);
         if (!isUnParked) {
             throw new VehicleNotParkedException("Vehicle Not Parked");
         }
-        if (owner != null && isParkingFull && isUnParked) {
-            owner.notifyParkingAvailable();
-        }
+        sendNotificationToOwner();
     }
 
-    public boolean isCarParked(Parkable car) {
+    private void sendNotificationToOwner() {
+        if (owner == null) {
+            return;
+        }
+        if ((capacity - 1) == parkedVehicles.size())
+            owner.notifyParkingAvailable();
+    }
+
+    boolean isCarParked(Parkable car) {
         return parkedVehicles.contains(car);
     }
-
-
 }

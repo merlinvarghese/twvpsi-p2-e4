@@ -6,23 +6,33 @@ import java.util.HashSet;
 public class ParkingLot {
     private final long availableSpace;
     private HashSet<Parkable> parkedVehicles;
+    private ParkingLotOwner owner;
 
     public ParkingLot(long maxSpace) {
         this.availableSpace = maxSpace;
-        parkedVehicles = new HashSet<>();
+        this.parkedVehicles = new HashSet<>();
     }
 
-    private boolean isParkingSpaceAvailable() {
-        return parkedVehicles.size() < availableSpace;
+    public ParkingLot(long maxSpace, ParkingLotOwner owner) {
+        this.availableSpace = maxSpace;
+        this.parkedVehicles = new HashSet<>();
+        this.owner = owner;
+    }
+
+    private boolean isParkingFull() {
+        return parkedVehicles.size() >= availableSpace;
     }
 
     public void park(Parkable vehicle) throws SpaceNotAvailableException, VehicleAlreadyParkedException {
-        if (!isParkingSpaceAvailable()) {
+        if (isParkingFull()) {
             throw new SpaceNotAvailableException("Parking full");
         }
-        boolean status = parkedVehicles.add(vehicle);
-        if (!status) {
+        boolean isParked = parkedVehicles.add(vehicle);
+        if (!isParked) {
             throw new VehicleAlreadyParkedException();
+        }
+        if(isParkingFull()) {
+            owner.notifyParkingFull();
         }
     }
 

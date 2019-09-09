@@ -1,9 +1,13 @@
 import com.tw.vapasi.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@SuppressWarnings("ALL")
 class ParkingLotTest {
+
     @Test
     void expectDriverAbleToParkVehicle() {
         Vehicle car = new Vehicle("safari");
@@ -75,6 +79,18 @@ class ParkingLotTest {
         assertDoesNotThrow(() -> {
             space.park(car);
         });
+    }
+
+    @Test
+    void expectNotificationSentToOwnerOnParkingLotFull() throws VehicleAlreadyParkedException,
+            SpaceNotAvailableException {
+        ParkingLotOwner owner = mock(ParkingLotOwner.class);
+        ParkingLot parkingLot = new ParkingLot(1, owner);
+        Parkable car1 = mock(Parkable.class);
+
+        parkingLot.park(car1);
+
+        verify(owner).notifyParkingFull();
     }
 }
 

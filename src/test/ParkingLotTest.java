@@ -92,6 +92,30 @@ class ParkingLotTest {
 
         verify(owner).notifyParkingFull();
     }
+
+    @Test
+    void expectNotificationNotSentToOwnerOnParkingSuccess() throws VehicleAlreadyParkedException,
+            SpaceNotAvailableException {
+        ParkingLotOwner owner = mock(ParkingLotOwner.class);
+        ParkingLot parkingLot = new ParkingLot(2, owner);
+        Parkable car1 = mock(Parkable.class);
+
+        parkingLot.park(car1);
+
+        verify(owner, never()).notifyParkingFull();
+    }
+
+    @Test
+    void expectNotificationSentToOwnerOnParkingSpaceAvailableAgain() throws VehicleAlreadyParkedException, SpaceNotAvailableException, VehicleNotParkedException {
+        ParkingLotOwner owner = mock(ParkingLotOwner.class);
+        ParkingLot parkingLot = new ParkingLot(1, owner);
+        Parkable car1 = mock(Parkable.class);
+        parkingLot.park(car1);
+
+        parkingLot.unPark(car1);
+
+        verify(owner).notifyParkingAvailable();
+    }
 }
 
 

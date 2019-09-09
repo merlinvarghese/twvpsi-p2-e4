@@ -31,19 +31,26 @@ public class ParkingLot {
         if (!isParked) {
             throw new VehicleAlreadyParkedException();
         }
-        if(isParkingFull()) {
+        if (owner != null && isParkingFull()) {
             owner.notifyParkingFull();
         }
     }
 
     public void unPark(Parkable vehicle) throws VehicleNotParkedException {
-        boolean status = parkedVehicles.remove(vehicle);
-        if (!status) {
+        boolean isParkingFull = isParkingFull();
+
+        boolean isUnParked = parkedVehicles.remove(vehicle);
+        if (!isUnParked) {
             throw new VehicleNotParkedException("Vehicle Not Parked");
+        }
+        if (owner != null && isParkingFull && isUnParked) {
+            owner.notifyParkingAvailable();
         }
     }
 
     public boolean isCarParked(Parkable car) {
         return parkedVehicles.contains(car);
     }
+
+
 }

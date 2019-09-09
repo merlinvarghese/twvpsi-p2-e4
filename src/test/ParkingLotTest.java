@@ -1,7 +1,7 @@
 import com.tw.vapasi.*;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 class ParkingLotTest {
     @Test
@@ -65,6 +65,16 @@ class ParkingLotTest {
         ParkingLot space = new ParkingLot(10);
 
         assertFalse(space.isCarParked(car));
+    }
+
+    @Test
+    void expectCarIsParked() {
+        Parkable car = mock(Parkable.class);
+        ParkingLot space = new ParkingLot(2);
+
+        assertDoesNotThrow(() -> {
+            space.park(car);
+        });
     }
 }
 

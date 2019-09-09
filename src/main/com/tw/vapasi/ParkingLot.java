@@ -5,7 +5,7 @@ import java.util.HashSet;
 // Understands space available to station a parkable automobile
 public class ParkingLot {
     private final long availableSpace;
-    private HashSet<Vehicle> parkedVehicles;
+    private HashSet<Parkable> parkedVehicles;
 
     public ParkingLot(long maxSpace) {
         this.availableSpace = maxSpace;
@@ -16,7 +16,7 @@ public class ParkingLot {
         return parkedVehicles.size() < availableSpace;
     }
 
-    public void park(Vehicle vehicle) throws SpaceNotAvailableException, VehicleAlreadyParkedException {
+    public void park(Parkable vehicle) throws SpaceNotAvailableException, VehicleAlreadyParkedException {
         if (!isParkingSpaceAvailable()) {
             throw new SpaceNotAvailableException("Parking full");
         }
@@ -26,14 +26,14 @@ public class ParkingLot {
         }
     }
 
-    public void unPark(Vehicle vehicle) throws VehicleNotParkedException {
+    public void unPark(Parkable vehicle) throws VehicleNotParkedException {
         boolean status = parkedVehicles.remove(vehicle);
         if (!status) {
             throw new VehicleNotParkedException("Vehicle Not Parked");
         }
     }
 
-    public boolean isCarParked(Vehicle car) {
+    public boolean isCarParked(Parkable car) {
         return parkedVehicles.contains(car);
     }
 }

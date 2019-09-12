@@ -16,11 +16,11 @@ class ParkingLot {
         this.listeners = new ArrayList<>();
     }
 
-    void registerListener(ParkingLotListener listener){
+    void registerListener(ParkingLotListener listener) {
         this.listeners.add(listener);
     }
 
-    private boolean isParkingFull() {
+    boolean isParkingFull() {
         return capacity == parkedVehicles.size();
     }
 
@@ -46,13 +46,17 @@ class ParkingLot {
 
     private void sendParkingAvailableNotificationToListeners() {
         for (ParkingLotListener listener : listeners) {
-            if ((capacity - 1) == parkedVehicles.size())
+            if (isParkingAvailableAgain())
                 listener.notifyParkingAvailable(this);
         }
     }
 
     boolean isCarParked(Parkable car) {
         return parkedVehicles.contains(car);
+    }
+
+    boolean isParkingAvailableAgain() {
+        return (capacity - 1) == parkedVehicles.size();
     }
 
     private void sendParkingFullNotification() {
@@ -62,7 +66,4 @@ class ParkingLot {
         }
     }
 
-    boolean isParkingSpaceAvailable() {
-        return !isParkingFull();
-    }
 }

@@ -2,43 +2,47 @@ package com.tw.vapasi;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
-public class ValetTest {
+class ValetTest {
     @Test
-    void expectValetCanParkAParkable() throws SpaceNotAvailableException, VehicleAlreadyParkedException {
+    void expectValetCanParkAParkable() {
         //Arrange
-        ArrayList<ParkingLot> availableParkingLots = new ArrayList<>();
-        ArrayList<ParkingLot> fullParkingLots = new ArrayList<>();
-        ParkingLot parkingLotOne = new ParkingLot(2);
-        ParkingLot parkingLotTwo = new ParkingLot(4);
-        availableParkingLots.add(parkingLotOne);
-        fullParkingLots.add(parkingLotTwo);
+        ParkingLot parkingLotOne = new ParkingLot(1);
+        ParkingLot parkingLotTwo = new ParkingLot(2);
+        List<ParkingLot> parkingLots = Arrays.asList(parkingLotOne, parkingLotTwo);
+        Valet valet = new Valet(parkingLots);
         Parkable car = mock(Parkable.class);
-        Valet valet = new Valet(availableParkingLots, fullParkingLots);
-        parkingLotOne.registerListener(valet);
 
         //Act + Assert
         assertDoesNotThrow(() -> valet.park(car));
+        assertTrue(parkingLotOne.isCarParked(car));
+        assertFalse(parkingLotTwo.isCarParked(car));
     }
 
     @Test
     void expectValetCannotParkAParkable() throws SpaceNotAvailableException, VehicleAlreadyParkedException {
         //Arrange
-        ArrayList<ParkingLot> availableParkingLots = new ArrayList<>();
-        ArrayList<ParkingLot> fullParkingLots = new ArrayList<>();
-        ParkingLot parkingLotOne = new ParkingLot(2);
-        fullParkingLots.add(parkingLotOne);
-        Parkable car = mock(Parkable.class);
-        Valet valet = new Valet(availableParkingLots, fullParkingLots);
-        parkingLotOne.registerListener(valet);
+        ParkingLot parkingLotOne = new ParkingLot(1);
+        ParkingLot parkingLotTwo = new ParkingLot(1);
+        List<ParkingLot> parkingLots = Arrays.asList(parkingLotOne, parkingLotTwo);
+        Parkable carOne = mock(Parkable.class);
+        Parkable carTwo = mock(Parkable.class);
+        Parkable carThree = mock(Parkable.class);
+        Valet valet = new Valet(parkingLots);
+        valet.park(carOne);
+        valet.park(carTwo);
 
         //Act + Assert
-        assertThrows(SpaceNotAvailableException.class, () -> valet.park(car));
+        assertThrows(SpaceNotAvailableException.class, () -> valet.park(carThree));
+        assertTrue(parkingLotOne.isCarParked(carOne));
+        assertTrue(parkingLotTwo.isCarParked(carTwo));
+        assertFalse(parkingLotOne.isCarParked(carThree));
+        assertFalse(parkingLotTwo.isCarParked(carThree));
     }
 
 }

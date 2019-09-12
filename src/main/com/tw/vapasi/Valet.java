@@ -1,14 +1,17 @@
 package com.tw.vapasi;
 
 import java.util.ArrayList;
+import java.util.List;
 
 class Valet implements ParkingLotListener {
-    private final ArrayList<ParkingLot> parkingLotFullList;
-    private final ArrayList<ParkingLot> parkingLotAvailableList;
+    private final List<ParkingLot> parkingLotFullList = new ArrayList<>();
+    private final List<ParkingLot> parkingLotAvailableList = new ArrayList<>();
+    private final List<ParkingLot> parkingLots;
 
-    Valet(ArrayList<ParkingLot> parkingLotAvailableList, ArrayList<ParkingLot> parkingLotFullList) {
-        this.parkingLotAvailableList = parkingLotAvailableList;
-        this.parkingLotFullList = parkingLotFullList;
+    Valet(List<ParkingLot> parkingLots) {
+        this.parkingLots = parkingLots;
+        registerForParkingLots();
+        arrangeParkingLots();
     }
 
     void park(Parkable vehicle) throws VehicleAlreadyParkedException, SpaceNotAvailableException {
@@ -18,7 +21,6 @@ class Valet implements ParkingLotListener {
             throw new SpaceNotAvailableException("Parking full");
         }
     }
-
 
     @Override
     public void notifyParkingFull(ParkingLot parkingLot) {
@@ -34,5 +36,21 @@ class Valet implements ParkingLotListener {
             parkingLotFullList.remove(parkingLot);
         }
         parkingLotAvailableList.add(parkingLot);
+    }
+
+    private void registerForParkingLots() {
+        for (ParkingLot parkingLot : parkingLots) {
+            parkingLot.registerListener(this);
+        }
+    }
+
+    private void arrangeParkingLots() {
+        for (ParkingLot parkingLot : parkingLots) {
+            if (parkingLot.isParkingFull()) {
+                parkingLotFullList.add(parkingLot);
+            } else {
+                parkingLotAvailableList.add(parkingLot);
+            }
+        }
     }
 }

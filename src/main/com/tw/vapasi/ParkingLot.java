@@ -23,7 +23,8 @@ class ParkingLot {
         return capacity == parkedVehicles.size();
     }
 
-    void park(Parkable vehicle) throws SpaceNotAvailableException, VehicleAlreadyParkedException {
+    void park(Parkable vehicle) throws SpaceNotAvailableException,
+            VehicleAlreadyParkedException {
         if (isParkingFull()) {
             throw new SpaceNotAvailableException("Parking full");
         }
@@ -31,9 +32,7 @@ class ParkingLot {
         if (!isParked) {
             throw new VehicleAlreadyParkedException();
         }
-        if (owner != null && isParkingFull()) {
-            owner.notifyParkingFull();
-        }
+        sendParkingFullNotification();
     }
 
     void unPark(Parkable vehicle) throws VehicleNotParkedException {
@@ -41,10 +40,10 @@ class ParkingLot {
         if (!isUnParked) {
             throw new VehicleNotParkedException("Vehicle Not Parked");
         }
-        sendNotificationToOwner();
+        sendParkingAvailableNotificationToOwner();
     }
 
-    private void sendNotificationToOwner() {
+    private void sendParkingAvailableNotificationToOwner() {
         if (owner == null) {
             return;
         }
@@ -54,5 +53,15 @@ class ParkingLot {
 
     boolean isCarParked(Parkable car) {
         return parkedVehicles.contains(car);
+    }
+
+    private void sendParkingFullNotification() {
+        if (owner != null && isParkingFull()) {
+            owner.notifyParkingFull();
+        }
+    }
+
+    boolean isParkingSpaceAvailable() {
+        return !isParkingFull();
     }
 }

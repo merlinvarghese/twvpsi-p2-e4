@@ -1,22 +1,23 @@
 package com.tw.vapasi;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 // Understands space available to station a parkable automobile
 class ParkingLot {
     private final long capacity;
     private HashSet<Parkable> parkedVehicles;
-    private ParkingLotOwner owner;
+    private List<ParkingLotListener> listeners;
 
     ParkingLot(long maxSpace) {
         this.capacity = maxSpace;
         this.parkedVehicles = new HashSet<>();
+        this.listeners = new ArrayList<>();
     }
 
-    ParkingLot(long maxSpace, ParkingLotOwner owner) {
-        this.capacity = maxSpace;
-        this.parkedVehicles = new HashSet<>();
-        this.owner = owner;
+    void registerListener(ParkingLotListener listener){
+        this.listeners.add(listener);
     }
 
     private boolean isParkingFull() {
@@ -40,15 +41,14 @@ class ParkingLot {
         if (!isUnParked) {
             throw new VehicleNotParkedException("Vehicle Not Parked");
         }
-        sendParkingAvailableNotificationToOwner();
+        sendParkingAvailableNotificationToListeners();
     }
 
-    private void sendParkingAvailableNotificationToOwner() {
-        if (owner == null) {
-            return;
+    private void sendParkingAvailableNotificationToListeners() {
+        for (ParkingLotListener listener : listeners) {
+            if ((capacity - 1) == parkedVehicles.size())
+                listener.notifyParkingAvailable(this);
         }
-        if ((capacity - 1) == parkedVehicles.size())
-            owner.notifyParkingAvailable();
     }
 
     boolean isCarParked(Parkable car) {
@@ -56,8 +56,9 @@ class ParkingLot {
     }
 
     private void sendParkingFullNotification() {
-        if (owner != null && isParkingFull()) {
-            owner.notifyParkingFull();
+        for (ParkingLotListener listener : listeners) {
+            if (isParkingFull())
+                listener.notifyParkingFull(this);
         }
     }
 

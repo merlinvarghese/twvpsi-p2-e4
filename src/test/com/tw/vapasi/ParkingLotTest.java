@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@SuppressWarnings("ALL")
 class ParkingLotTest {
 
     @Test
@@ -111,12 +110,12 @@ class ParkingLotTest {
             verify(owner, never()).notifyParkingFull(parkingLot);
         }
 
-        @Disabled
         @Test
         void expectNotificationSentToOwnerWhenParkingSpaceAvailableAgain() throws VehicleAlreadyParkedException,
                 SpaceNotAvailableException, VehicleNotParkedException {
             ParkingLotListener owner = mock(ParkingLotListener.class);
             ParkingLot parkingLot = new ParkingLot(1);
+            parkingLot.registerListener(owner);
             Parkable car = mock(Parkable.class);
             parkingLot.park(car);
 

@@ -1,12 +1,15 @@
 package com.tw.vapasi;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 class Valet implements ParkingLotListener {
     private final List<ParkingLot> parkingLotFullList = new ArrayList<>();
     private final List<ParkingLot> parkingLotAvailableList = new ArrayList<>();
     private final List<ParkingLot> parkingLots;
+    private final Map<Parkable, ParkingLot> parkingInformation = new HashMap<>();
 
     Valet(List<ParkingLot> parkingLots) {
         this.parkingLots = parkingLots;
@@ -16,10 +19,19 @@ class Valet implements ParkingLotListener {
 
     void park(Parkable vehicle) throws VehicleAlreadyParkedException, SpaceNotAvailableException {
         if (!parkingLotAvailableList.isEmpty()) {
-            parkingLotAvailableList.get(0).park(vehicle);
+            ParkingLot parkingLot = parkingLotAvailableList.get(0);
+            parkingLot.park(vehicle);
+            parkingInformation.put(vehicle, parkingLot);
         } else {
             throw new SpaceNotAvailableException("Parking full");
         }
+    }
+
+    void unpark(Parkable vehicle) throws VehicleNotParkedException {
+        ParkingLot parkingLot = parkingInformation.get(vehicle);
+        if (parkingLot != null) {
+            parkingLot.unPark(vehicle);
+        } else throw new VehicleNotParkedException("Vehicle not parked");
     }
 
     @Override

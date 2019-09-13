@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-// Understands space available to station a parkable automobile
+// Understands space available to station/unstation a parkable automobile
 class ParkingLot {
     private final long capacity;
     private HashSet<Parkable> parkedVehicles;
@@ -18,10 +18,6 @@ class ParkingLot {
 
     void registerListener(ParkingLotListener listener) {
         this.listeners.add(listener);
-    }
-
-    boolean isParkingFull() {
-        return capacity == parkedVehicles.size();
     }
 
     void park(Parkable vehicle) throws SpaceNotAvailableException,
@@ -44,6 +40,14 @@ class ParkingLot {
         sendParkingAvailableNotificationToListeners();
     }
 
+    boolean isCarParked(Parkable car) {
+        return parkedVehicles.contains(car);
+    }
+
+    boolean isParkingFull() {
+        return capacity == parkedVehicles.size();
+    }
+
     private void sendParkingAvailableNotificationToListeners() {
         for (ParkingLotListener listener : listeners) {
             if (isParkingAvailableAgain())
@@ -51,11 +55,7 @@ class ParkingLot {
         }
     }
 
-    boolean isCarParked(Parkable car) {
-        return parkedVehicles.contains(car);
-    }
-
-    boolean isParkingAvailableAgain() {
+    private boolean isParkingAvailableAgain() {
         return (capacity - 1) == parkedVehicles.size();
     }
 
